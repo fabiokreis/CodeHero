@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CodeHero</string>
+    <string name="busca">BUSCA MARVEL</string>
+    <string name="teste">TESTE FRONT-END</string>
+    <string name="nome">Nome</string>
+    <string name="nome_personagem">Nome do Personagem</string>
 </resources>
