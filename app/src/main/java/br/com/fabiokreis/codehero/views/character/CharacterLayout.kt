@@ -10,17 +10,19 @@ import br.com.fabiokreis.codehero.R
 import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.views.BottomMenu.bottomMenu
+import br.com.fabiokreis.codehero.views.BottomMenu.result
 import br.com.fabiokreis.codehero.views.ReactRenderableView
-import trikita.anvil.Anvil
+import trikita.anvil.Anvil.render
 import trikita.anvil.BaseDSL
 import trikita.anvil.BaseDSL.MATCH
 import trikita.anvil.BaseDSL.size
 import trikita.anvil.DSL.*
 
-class CharacterLayout(context: Context): ReactRenderableView(context) {
+class CharacterLayout(context: Context) : ReactRenderableView(context) {
 
     private var characters = listOf<Character>()
     private var name: String = ""
+    private var offset: Int = 0
 
     private val redMarvel = Color.parseColor("#D42026")
 
@@ -95,13 +97,14 @@ class CharacterLayout(context: Context): ReactRenderableView(context) {
                     BaseDSL.weight(.2f)
                     size(0, MATCH)
                     backgroundColor(redMarvel)
-                    BaseDSL.margin(0, 0, 10, 0)
-                    gravity(BaseDSL.CENTER)
+                    margin(0, 0, 10, 0)
+                    gravity(CENTER)
                     textColor(Color.WHITE)
                     BaseDSL.textSize(20.0f)
-                    text("Pesquisar")
+                    text(R.string.pesquisar)
                     onClick {
                         characters = state.search(state, name) ?: state.characters.values.toList()
+
                     }
                 }
             }
@@ -136,7 +139,7 @@ class CharacterLayout(context: Context): ReactRenderableView(context) {
             size(MATCH, MATCH)
             orientation(VERTICAL)
 
-            characters.forEach { character ->
+            characters.forEachIndexed() { index, character ->
                 characterSummaryView {
                     character(character)
                 }
@@ -150,7 +153,13 @@ class CharacterLayout(context: Context): ReactRenderableView(context) {
             alignParentBottom()
             size(MATCH, WRAP)
 
-            bottomMenu()
+            bottomMenu(
+                result { offset = it },
+                characters.count()
+            )
+
+            val state = MarvelApplication.redukt.state
+            characters = state.filteredCharactersList(state, offset) ?: state.characters.values.toList()
         }
     }
 
@@ -160,7 +169,7 @@ class CharacterLayout(context: Context): ReactRenderableView(context) {
 
     override fun onChanged(state: AppState) {
         characters = state.characters.values.toList()
-        Anvil.render()
+        render()
     }
 
 }

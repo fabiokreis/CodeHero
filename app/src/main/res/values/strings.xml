@@ -4,4 +4,5 @@
     <string name="teste">TESTE FRONT-END</string>
     <string name="nome">Nome</string>
     <string name="nome_personagem">Nome do Personagem</string>
+    <string name="pesquisar">Pesquisar</string>
 </resources>
