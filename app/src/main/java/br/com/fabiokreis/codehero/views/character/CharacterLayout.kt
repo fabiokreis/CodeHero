@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.LinearLayout.VERTICAL
+import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.R
 import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.models.Character
@@ -18,19 +19,13 @@ import trikita.anvil.DSL.*
 
 class CharacterLayout(context: Context): ReactRenderableView(context) {
 
-    private var characters = listOf<Character>(
-        Character(name = "nome 1"),
-        Character(name = "nome 2"),
-        Character(name = "nome 3"),
-        Character(name = "nome 4"),
-        Character(name = "nome 5")
-
-    )
-    private var textSearch: String = ""
+    private var characters = listOf<Character>()
+    private var name: String = ""
 
     private val redMarvel = Color.parseColor("#D42026")
 
     override fun view() {
+        focusableInTouchMode(true)
         relativeLayout {
             size(MATCH, MATCH)
             backgroundColor(Color.WHITE)
@@ -81,12 +76,33 @@ class CharacterLayout(context: Context): ReactRenderableView(context) {
                 typeface(null, Typeface.BOLD)
             }
 
-            editText {
-                backgroundResource(R.drawable.rounded_edit_text)
-                text(textSearch)
-                textColor(redMarvel)
-                onTextChanged {
-                    textSearch = it.toString()
+            linearLayout {
+                orientation(HORIZONTAL)
+                size(MATCH, WRAP)
+                weightSum(1f)
+
+                val state = MarvelApplication.redukt.state
+
+                editText {
+                    BaseDSL.weight(.8f)
+                    backgroundResource(R.drawable.rounded_edit_text)
+                    text(name)
+                    textColor(redMarvel)
+                    onTextChanged { name = it.toString() }
+                }
+
+                textView {
+                    BaseDSL.weight(.2f)
+                    size(0, MATCH)
+                    backgroundColor(redMarvel)
+                    BaseDSL.margin(0, 0, 10, 0)
+                    gravity(BaseDSL.CENTER)
+                    textColor(Color.WHITE)
+                    BaseDSL.textSize(20.0f)
+                    text("Pesquisar")
+                    onClick {
+                        characters = state.search(state, name) ?: state.characters.values.toList()
+                    }
                 }
             }
         }
@@ -143,8 +159,8 @@ class CharacterLayout(context: Context): ReactRenderableView(context) {
     }
 
     override fun onChanged(state: AppState) {
-//        characters = state.characters.values.toList()
-//        Anvil.render()
+        characters = state.characters.values.toList()
+        Anvil.render()
     }
 
 }

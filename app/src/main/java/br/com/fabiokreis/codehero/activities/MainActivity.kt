@@ -6,7 +6,7 @@ import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.views.character.CharacterLayout
 
 class MainActivity : ReactiveActivity() {
-    override fun initialState() { }
+    override fun initialState() { syncContent() }
 
     override fun render(): View {
         return CharacterLayout(this)
@@ -16,10 +16,7 @@ class MainActivity : ReactiveActivity() {
         return newState.stateStarted != oldState.stateStarted
     }
 
-    override fun onChanged(state: AppState) {
-        if (state.stateStarted)
-            syncContent()
-    }
+    override fun onChanged(state: AppState) { }
 
     private fun syncContent() {
         ActionCreator.syncCharacters()
