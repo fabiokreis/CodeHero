@@ -1,9 +1,7 @@
 package br.com.fabiokreis.codehero.models
 
 data class AppState(
-    val characters: Map<String, Character> = LinkedHashMap(),
-
-    val stateStarted: Boolean = true
+    val characters: Map<String, Character> = LinkedHashMap()
 ) {
     fun search(state: AppState, name: String? = null): List<Character>? =
         name?.let {
@@ -19,10 +17,13 @@ data class AppState(
                 map.addAll(listOf(index to character))
             }
 
-            val filtered = map.filter { it.first == offset || it.first == offset + 1 || it.first == offset + 2
-                    || it.first == offset + 3}
-
-            filtered.forEach { list?.add(it.second) }
+            map.filter {
+                    it.first == offset
+                            || it.first == offset + 1
+                            || it.first == offset + 2
+                            || it.first == offset + 3
+                }
+                .forEach { list?.add(it.second) }
         }
 
         return list

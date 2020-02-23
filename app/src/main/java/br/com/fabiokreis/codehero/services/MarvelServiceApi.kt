@@ -1,5 +1,6 @@
 package br.com.fabiokreis.codehero.services
 
+import android.util.Log
 import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.models.ServerResponse
 import br.com.fabiokreis.codehero.models.converters.md5
@@ -24,11 +25,12 @@ object MarvelServiceApi : BaseApi() {
     private val service = retrofit.create(MarvelService::class.java)
 
     fun getCharacters(callback: (character: ServerResponse<Character>?, error: String?) -> Unit) {
-        println("timeStamp: $timeStamp")
-        println("publicKey: $publicKey")
-        println("privateKey: $privateKey")
-        println("hash: $hash")
+        Log.d("teste", "timeStamp: $timeStamp")
+        Log.d("teste", "publicKey: $publicKey")
+        Log.d("teste", "privateKey: $privateKey")
+        Log.d("teste", "hash: $hash")
 
-        service.getCharacters(timeStamp, publicKey, hash).enqueue(handleResponse(callback))
+
+        service.getCharacters(timeStamp, publicKey, hash, 0, 99).enqueue(handleResponse(callback))
     }
 }

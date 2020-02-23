@@ -33,7 +33,7 @@ class MarvelApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initRedukt(this, AppState(stateStarted = false)).let {
+        initRedukt(this, AppState()).let {
             redukt = it
         }
     }

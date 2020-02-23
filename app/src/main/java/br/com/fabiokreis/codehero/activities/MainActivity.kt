@@ -13,7 +13,7 @@ class MainActivity : ReactiveActivity() {
     }
 
     override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
-        return newState.stateStarted != oldState.stateStarted
+        return newState != oldState
     }
 
     override fun onChanged(state: AppState) { }

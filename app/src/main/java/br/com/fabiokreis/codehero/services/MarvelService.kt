@@ -10,9 +10,11 @@ interface MarvelService {
 
     @GET("characters")
     fun getCharacters(
-        @Query("ts") ts : String,
-        @Query("apikey") apikey : String,
-        @Query("hash") hash : String
+        @Query("ts") ts: String,
+        @Query("apikey") apikey: String,
+        @Query("hash") hash: String,
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int
     ): Call<ServerResponse<Character>>
 
 }

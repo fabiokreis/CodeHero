@@ -102,9 +102,11 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
                     textColor(Color.WHITE)
                     BaseDSL.textSize(20.0f)
                     text(R.string.pesquisar)
-                    onClick {
-                        characters = state.search(state, name) ?: state.characters.values.toList()
+                    if (name.isNotEmpty()) {
+                        onClick {
+                            characters = state.search(state, name) ?: state.characters.values.toList()
 
+                        }
                     }
                 }
             }
