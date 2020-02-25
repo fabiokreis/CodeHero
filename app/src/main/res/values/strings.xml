@@ -5,4 +5,5 @@
     <string name="nome">Nome</string>
     <string name="nome_personagem">Nome do Personagem</string>
     <string name="pesquisar">Pesquisar</string>
+    <string name="detalhe">Detalhes do Personagem</string>
 </resources>

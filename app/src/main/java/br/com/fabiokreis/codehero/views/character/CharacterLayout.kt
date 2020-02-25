@@ -3,20 +3,23 @@ package br.com.fabiokreis.codehero.views.character
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.text.InputType
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.LinearLayout.VERTICAL
 import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.R
+import br.com.fabiokreis.codehero.extensions.onEnterKeyPressed
 import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.views.BottomMenu.bottomMenu
 import br.com.fabiokreis.codehero.views.BottomMenu.result
 import br.com.fabiokreis.codehero.views.ReactRenderableView
 import trikita.anvil.Anvil.render
-import trikita.anvil.BaseDSL
 import trikita.anvil.BaseDSL.MATCH
 import trikita.anvil.BaseDSL.size
 import trikita.anvil.DSL.*
+import java.util.*
 
 class CharacterLayout(context: Context) : ReactRenderableView(context) {
 
@@ -50,15 +53,15 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             textView {
                 text(R.string.busca)
                 textColor(redMarvel)
-                textSize(sip(24f))
-                typeface(null, Typeface.BOLD)
+                textSize(sip(16f))
+                typeface("Roboto-Black.ttf")
             }
 
             textView {
                 text(R.string.teste)
                 textColor(redMarvel)
-                textSize(sip(24f))
-                typeface(null, Typeface.NORMAL)
+                textSize(sip(16f))
+                typeface("Roboto-Light.ttf")
             }
         }
     }
@@ -71,43 +74,27 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             orientation(VERTICAL)
             margin(dip(24), 0, dip(24), 0)
 
+            val state = MarvelApplication.redukt.state
+
             textView {
                 text(R.string.nome_personagem)
                 textColor(redMarvel)
-                textSize(sip(24f))
+                textSize(sip(14f))
                 typeface(null, Typeface.BOLD)
             }
-
-            linearLayout {
-                orientation(HORIZONTAL)
-                size(MATCH, WRAP)
-                weightSum(1f)
-
-                val state = MarvelApplication.redukt.state
-
-                editText {
-                    BaseDSL.weight(.8f)
-                    backgroundResource(R.drawable.rounded_edit_text)
-                    text(name)
-                    textColor(redMarvel)
-                    onTextChanged { name = it.toString() }
-                }
-
-                textView {
-                    BaseDSL.weight(.2f)
-                    size(0, MATCH)
-                    backgroundColor(redMarvel)
-                    margin(0, 0, 10, 0)
-                    gravity(CENTER)
-                    textColor(Color.WHITE)
-                    BaseDSL.textSize(20.0f)
-                    text(R.string.pesquisar)
-                    if (name.isNotEmpty()) {
-                        onClick {
-                            characters = state.search(state, name) ?: state.characters.values.toList()
-
-                        }
-                    }
+            editText {
+                maxLines(1)
+                padding(dip(8))
+                imeOptions(EditorInfo.IME_ACTION_SEARCH)
+                inputType(InputType.TYPE_CLASS_TEXT)
+                backgroundResource(R.drawable.rounded_edit_text)
+                text(name)
+                textColor(redMarvel)
+                onTextChanged { name = it.toString() }
+                hint(R.string.pesquisar)
+                onEnterKeyPressed {
+                    characters = state.search(state, name) ?: state.characters.values.toList()
+                    render()
                 }
             }
         }
@@ -120,13 +107,13 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             size(MATCH, WRAP)
             orientation(HORIZONTAL)
             margin(0, dip(12), 0, 0)
-            padding(dip(64), dip(8), 0, dip(8))
+            padding(dip(80), dip(8), 0, dip(8))
             backgroundColor(redMarvel)
 
             textView {
                 text(R.string.nome)
                 textColor(Color.WHITE)
-                textSize(sip(24f))
+                textSize(sip(16f))
 
                 typeface(null, Typeface.BOLD)
             }
@@ -140,9 +127,11 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             above(14)
             size(MATCH, MATCH)
             orientation(VERTICAL)
+            weightSum(1f)
 
-            characters.forEachIndexed() { index, character ->
+            characters.forEach { character ->
                 characterSummaryView {
+                    weight(.25f)
                     character(character)
                 }
             }
@@ -155,13 +144,9 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             alignParentBottom()
             size(MATCH, WRAP)
 
-            bottomMenu(
-                result { offset = it },
-                characters.count()
-            )
+            bottomMenu(result { offset = it })
 
-            val state = MarvelApplication.redukt.state
-            characters = state.filteredCharactersList(state, offset) ?: state.characters.values.toList()
+            filterCharacters()
         }
     }
 
@@ -170,8 +155,13 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
     }
 
     override fun onChanged(state: AppState) {
-        characters = state.characters.values.toList()
+        filterCharacters(state)
         render()
+    }
+
+    private fun filterCharacters(state: AppState? = null) {
+        val state = state ?: MarvelApplication.redukt.state
+        characters = state.filteredCharactersList(state, offset) ?: state.characters.values.toList()
     }
 
 }

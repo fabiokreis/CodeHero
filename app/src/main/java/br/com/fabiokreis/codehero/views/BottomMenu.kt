@@ -2,6 +2,7 @@ package br.com.fabiokreis.codehero.views
 
 import android.graphics.Color
 import android.widget.LinearLayout.HORIZONTAL
+import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.R
 import trikita.anvil.Anvil.render
 import trikita.anvil.BaseDSL
@@ -15,13 +16,10 @@ object BottomMenu {
     private val redMarvel = Color.parseColor("#D42026")
     private var firstButtonNumber: Int = 1
     private var buttonActive: Int = 1
-    private var total: Int = 27
-    private var numberOfButtons: Int = if ((total % 4) == 0) total / 4 else (total / 4) + 1
+
     private var resultCallback: ((Int) -> Unit)? = null
 
-    fun bottomMenu(result: Unit, total: Int) {
-        this.total = total
-
+    fun bottomMenu(result: Unit) {
         cardView {
             size(MATCH, WRAP)
             relativeLayout {
@@ -37,7 +35,8 @@ object BottomMenu {
     private fun renderLeftArrow() {
         imageView {
             alignParentLeft()
-            BaseDSL.size(dip(80), dip(80))
+            size(dip(48), dip(48))
+            margin(dip(30), dip(18), 0, dip(24))
             backgroundResource(R.drawable.baseline_arrow_left_24)
             onClick {
                 if (firstButtonNumber > 1)
@@ -57,7 +56,7 @@ object BottomMenu {
                     val active = x == buttonActive
                     text(x.toString())
                     textColor(getTextColor(active))
-                    textSize(sip(24f))
+                    textSize(sip(16f))
                     gravity(CENTER)
                     margin(dip(10), 0, dip(10), 0)
                     backgroundResource(getButtonResource(active))
@@ -72,9 +71,14 @@ object BottomMenu {
     }
 
     private fun renderRightArrow() {
+        val state = MarvelApplication.redukt.state
+        val total: Int = state.getTotalCharacters(state)
+        val numberOfButtons: Int = if ((total % 4) == 0) total / 4 else (total / 4) + 1
+
         imageView {
             alignParentRight()
-            BaseDSL.size(dip(80), dip(80))
+            BaseDSL.size(dip(48), dip(48))
+            margin(0, dip(18), dip(30), dip(24))
             backgroundResource(R.drawable.baseline_arrow_right_24)
             onClick {
                 if (numberOfButtons > firstButtonNumber + 2)
@@ -98,7 +102,7 @@ object BottomMenu {
             redMarvel
     }
 
-    fun result(callback: (Int) -> Unit){
+    fun result(callback: (Int) -> Unit) {
         resultCallback = callback
     }
 }

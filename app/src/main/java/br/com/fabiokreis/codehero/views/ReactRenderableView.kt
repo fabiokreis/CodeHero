@@ -7,7 +7,7 @@ import br.com.fabiokreis.codehero.models.AppState
 import com.github.raulccabreu.redukt.states.StateListener
 import trikita.anvil.Anvil
 
-abstract class ReactRenderableView(context: Context): FrameLayout(context),
+abstract class ReactRenderableView(context: Context) : FrameLayout(context),
     Anvil.Renderable, StateListener<AppState> {
 
     private var isRegisteredOnStateChange = false

@@ -20,11 +20,12 @@ abstract class BaseApi {
                 if (response.isSuccessful) {
                     callback.invoke(response.body(), null)
                 } else {
-                    callback.invoke(null,
-                        response.errorBody()?.string() ?: response.code().toString())
+                    callback.invoke(
+                        null,
+                        response.errorBody()?.string() ?: response.code().toString()
+                    )
                 }
             }
         }
     }
-
 }

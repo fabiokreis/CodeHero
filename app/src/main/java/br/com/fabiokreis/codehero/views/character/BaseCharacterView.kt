@@ -6,7 +6,7 @@ import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.views.ReactRenderableView
 import trikita.anvil.Anvil
 
-abstract class BaseCharacterView(context: Context): ReactRenderableView(context) {
+abstract class BaseCharacterView(context: Context) : ReactRenderableView(context) {
 
     protected var character: Character? = null
 

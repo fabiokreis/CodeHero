@@ -1,9 +1,10 @@
 package br.com.fabiokreis.codehero.services
 
-import android.util.Log
 import br.com.fabiokreis.codehero.models.Character
-import br.com.fabiokreis.codehero.models.ServerResponse
+import br.com.fabiokreis.codehero.models.Response
 import br.com.fabiokreis.codehero.models.converters.md5
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.sql.Timestamp
@@ -17,20 +18,23 @@ object MarvelServiceApi : BaseApi() {
     private val hash = "$timeStamp$privateKey$publicKey".md5()
 
 
+    private val logging = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(logging)
+        .build()
+
     override val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http://gateway.marvel.com/v1/public/")
+        .baseUrl("https://gateway.marvel.com/v1/public/")
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     private val service = retrofit.create(MarvelService::class.java)
 
-    fun getCharacters(callback: (character: ServerResponse<Character>?, error: String?) -> Unit) {
-        Log.d("teste", "timeStamp: $timeStamp")
-        Log.d("teste", "publicKey: $publicKey")
-        Log.d("teste", "privateKey: $privateKey")
-        Log.d("teste", "hash: $hash")
-
-
-        service.getCharacters(timeStamp, publicKey, hash, 0, 99).enqueue(handleResponse(callback))
+    fun getCharacters(callback: (character: Response<Character>?, error: String?) -> Unit) {
+        service.getCharacters(timeStamp, publicKey, hash, 0, 100).enqueue(handleResponse(callback))
     }
 }

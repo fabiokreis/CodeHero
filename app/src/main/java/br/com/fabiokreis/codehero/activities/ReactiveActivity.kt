@@ -7,7 +7,7 @@ import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.models.AppState
 import com.github.raulccabreu.redukt.states.StateListener
 
-abstract class ReactiveActivity: AppCompatActivity(), StateListener<AppState> {
+abstract class ReactiveActivity : AppCompatActivity(), StateListener<AppState> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

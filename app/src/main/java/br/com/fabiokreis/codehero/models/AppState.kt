@@ -18,15 +18,16 @@ data class AppState(
             }
 
             map.filter {
-                    it.first == offset
-                            || it.first == offset + 1
-                            || it.first == offset + 2
-                            || it.first == offset + 3
-                }
+                it.first == offset
+                        || it.first == offset + 1
+                        || it.first == offset + 2
+                        || it.first == offset + 3
+            }
                 .forEach { list?.add(it.second) }
         }
 
         return list
     }
 
+    fun getTotalCharacters(state: AppState): Int = state.characters.count()
 }

@@ -12,9 +12,7 @@ class CharacterSummaryView(context: Context) : BaseCharacterView(context) {
     override fun view() {
         val character = character ?: return
 
-        val name = character.name
-        val thumbnail = character.thumbnail
-
-        cardLayout(name, thumbnail)
+        cardLayout(context, character)
     }
 }
+

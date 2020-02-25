@@ -9,13 +9,15 @@ import br.com.fabiokreis.codehero.services.MarvelServiceApi.getCharacters
 import com.github.raulccabreu.redukt.actions.Action
 import com.github.raulccabreu.redukt.middlewares.BeforeAction
 
-class CharactersMiddleware(context: Context): NetworkOnMiddleware(context) {
+class CharactersMiddleware(context: Context) : NetworkOnMiddleware(context) {
 
     @BeforeAction(Actions.SYNC_CHARACTERS)
     fun syncCharacters(state: AppState, action: Action<*>) {
         val map: MutableMap<String, Character> = mutableMapOf()
         getCharacters { characters, _ ->
-            if (characters != null) map.putAll(characters.results.map { it.name to it })
+            if (characters != null)
+                map.putAll(characters.data.results.map { it.name to it })
+
             ActionCreator.saveResponseCharacters(map)
         }
     }
