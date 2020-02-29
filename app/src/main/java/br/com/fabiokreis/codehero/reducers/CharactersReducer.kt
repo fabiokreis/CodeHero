@@ -13,14 +13,19 @@ class CharactersReducer : BaseAnnotatedReducer<AppState>() {
         return state.copy(characters = payload, isResult = false)
     }
 
+    @Reduce(Actions.UPDATE_OFFSET)
+    fun updateOffset(state: AppState, payload: Int): AppState {
+        return state.copy(offset = payload)
+    }
+
     @Reduce(Actions.SEARCH_QUERY)
     fun saveSearchQuery(state: AppState, payload: String): AppState {
-        return state.copy(searchQuery = payload)
+        return state.copy(searchQuery = payload, offset = 0)
     }
 
     @Reduce(Actions.CLEAR_SEARCH)
     fun clearSearch(state: AppState, payload: Any?): AppState {
-        return state.copy(searchQuery = null, searchResult = linkedMapOf(), isResult = false)
+        return state.copy(searchQuery = null, searchResult = linkedMapOf(), isResult = false, offset = 0)
     }
 
     @Reduce(Actions.SEARCH_RESULT)

@@ -24,8 +24,6 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
     private var firstButtonNumber: Int = 1
     private var buttonActive: Int = 1
 
-    private var resultCallback: ((Int) -> Unit)? = null
-
     override fun view() {
         cardView {
             size(MATCH, WRAP)
@@ -60,7 +58,9 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
             orientation(HORIZONTAL)
             centerInParent()
 
-            for (x in firstButtonNumber..firstButtonNumber + 2) {
+            val numberOfButtons = MarvelApplication.redukt.state.getNumberOfVisibleButtons(firstButtonNumber)
+
+            for (x in firstButtonNumber..firstButtonNumber + numberOfButtons) {
                 textView {
                     val active = x == buttonActive
                     text(x.toString())
@@ -71,10 +71,8 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
                     backgroundResource(getButtonResource(active))
                     onClick {
                         buttonActive = x
-                        resultCallback?.invoke((buttonActive - 1) * 4)
-                        render()
+                        ActionCreator.updateOffset((x - 1) * 4)
                     }
-                    render()
                 }
             }
         }
@@ -82,8 +80,8 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
 
     private fun renderRightArrow() {
         val state = MarvelApplication.redukt.state
-        val total: Int = state.getTotalCharacters(state)
-        val numberOfButtons: Int = if ((total % 4) == 0) total / 4 else (total / 4) + 1
+        val total: Int = state.getTotalCharacters()
+        val numberOfButtons: Int = state.getTotalOfButtons()
 
         imageView {
             alignParentRight()
@@ -116,21 +114,9 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
             redMarvel
     }
 
-    fun result(callback: (Int) -> Unit) {
-        resultCallback = callback
-        render()
-    }
-
-    fun setButtonActive(buttonActive: Int) {
-        this.buttonActive = buttonActive
-        render()
-    }
-
     override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
         return newState != oldState
     }
 
-    override fun onChanged(state: AppState) {
-
-    }
+    override fun onChanged(state: AppState) { }
 }

@@ -28,7 +28,6 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
 
     private var characters = listOf<Character>()
     private var name: String = ""
-    private var offset: Int = 0
 
     private val redMarvel = Color.parseColor("#D42026")
 
@@ -150,8 +149,6 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
             size(MATCH, WRAP)
 
             bottomMenu {
-                if (offset == 0) setButtonActive(1)
-                result { offset = it }
                 this@CharacterLayout.render()
             }
 
@@ -162,16 +159,16 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
     override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
         return newState.characters != oldState.characters
                 || newState.searchResult != oldState.searchResult
+                || newState.offset != oldState.offset
     }
 
     override fun onChanged(state: AppState) {
-        if (state.isResult) offset = 0
         filterCharacters(state)
     }
 
     private fun filterCharacters(state: AppState? = null) {
         state ?: return
-        characters = state.filteredCharactersList(offset) ?: state.characters.values.toList()
+        characters = state.filteredCharactersList() ?: state.characters.values.toList()
         render()
     }
 

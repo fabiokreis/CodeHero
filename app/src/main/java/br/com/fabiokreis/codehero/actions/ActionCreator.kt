@@ -6,6 +6,7 @@ import br.com.fabiokreis.codehero.actions.Actions.SAVE_CHARACTERS
 import br.com.fabiokreis.codehero.actions.Actions.SEARCH_QUERY
 import br.com.fabiokreis.codehero.actions.Actions.SEARCH_RESULT
 import br.com.fabiokreis.codehero.actions.Actions.SYNC_CHARACTERS
+import br.com.fabiokreis.codehero.actions.Actions.UPDATE_OFFSET
 import br.com.fabiokreis.codehero.models.Character
 import com.github.raulccabreu.redukt.actions.Action
 
@@ -25,6 +26,10 @@ object ActionCreator {
 
     fun clearSearch() {
         asyncDispatch(Action<Void>(CLEAR_SEARCH))
+    }
+
+    fun updateOffset(value: Int) {
+        asyncDispatch(Action(UPDATE_OFFSET, value))
     }
 
     fun saveResultCharacters(response: Map<String, Character>) {
