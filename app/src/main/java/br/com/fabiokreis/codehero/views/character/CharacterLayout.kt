@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.text.InputType
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.LinearLayout.VERTICAL
 import br.com.fabiokreis.codehero.Anvil.ReactiveFrameComponent
@@ -17,6 +19,7 @@ import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.views.bottomMenu
 import br.com.fabiokreis.codehero.views.dslAddView
 import trikita.anvil.Anvil
+import trikita.anvil.BaseDSL
 import trikita.anvil.BaseDSL.MATCH
 import trikita.anvil.BaseDSL.size
 import trikita.anvil.DSL.*
@@ -29,6 +32,7 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
 
     private var characters = listOf<Character>()
     private var name: String = ""
+    private var isLoading = false
 
     private val redMarvel = Color.parseColor("#D42026")
 
@@ -42,6 +46,7 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
             renderSummaryTitle()
             renderSummary()
             renderButtonButtons()
+            renderLoading()
         }
     }
 
@@ -84,6 +89,7 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
                 typeface(null, Typeface.BOLD)
             }
             editText {
+                val field = Anvil.currentView<EditText>()
                 maxLines(1)
                 padding(dip(8))
                 imeOptions(EditorInfo.IME_ACTION_SEARCH)
@@ -94,6 +100,8 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
                 onTextChanged { name = it.toString() }
                 hint(R.string.pesquisar)
                 onEnterKeyPressed {
+                    hideKeyboard(field)
+
                     if (name.isEmpty())
                         ActionCreator.clearSearch()
                     else
@@ -125,6 +133,16 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
         }
     }
 
+    private fun renderLoading() {
+        if (isLoading) {
+            progressBar {
+                id(15)
+                size(WRAP, WRAP)
+                centerInParent()
+            }
+        }
+    }
+
     private fun renderSummary() {
         linearLayout {
             id(13)
@@ -139,10 +157,10 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
                     size(MATCH, 0)
                     weight(1f)
                     character(character)
+
+                    render()
                 }
             }
-
-            Anvil.render()
         }
     }
 
@@ -152,24 +170,33 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
             alignParentBottom()
             size(MATCH, WRAP)
 
-            bottomMenu { }
+            bottomMenu {
+                render()
+            }
         }
+    }
+
+    private fun hideKeyboard(view: EditText) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
         return newState.characters != oldState.characters
                 || newState.searchResult != oldState.searchResult
                 || newState.offset != oldState.offset
+                || newState.isLoading != oldState.isLoading
     }
 
     override fun onChanged(state: AppState) {
+        isLoading = state.isLoading
         filterCharacters(state)
     }
 
     private fun filterCharacters(state: AppState? = null) {
         state ?: return
         characters = state.filteredCharactersList() ?: state.characters.values.toList()
-        Anvil.render()
+        render()
     }
 
 }

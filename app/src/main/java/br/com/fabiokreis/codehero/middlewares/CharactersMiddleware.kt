@@ -17,6 +17,7 @@ class CharactersMiddleware(context: Context) : NetworkOnMiddleware(context) {
     fun syncCharacters(state: AppState, action: Action<*>) {
         val offset = state.characters.size
         val map: MutableMap<String, Character> = mutableMapOf()
+        ActionCreator.isLoading(true)
         getCharacters(offset) { characters, _ ->
             if (characters != null)
                 map.putAll(characters.data.results.map { it.name to it })
@@ -28,6 +29,7 @@ class CharactersMiddleware(context: Context) : NetworkOnMiddleware(context) {
     fun searchCharacter(state: AppState, action: Action<String>) {
         val name = action.payload as String
         val map: MutableMap<String, Character> = mutableMapOf()
+        ActionCreator.isLoading(true)
         getSearchCharacters(name) { characters, _ ->
             if (characters != null)
                 map.putAll(characters.data.results.map { it.name to it })

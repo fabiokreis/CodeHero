@@ -10,7 +10,7 @@ class CharactersReducer : BaseAnnotatedReducer<AppState>() {
 
     @Reduce(Actions.SAVE_CHARACTERS)
     fun saveCharacters(state: AppState, payload: Map<String, Character>): AppState {
-        return state.copy(characters = state.characters.plus(payload), isResult = false)
+        return state.copy(characters = state.characters.plus(payload), isResult = false, isLoading = false)
     }
 
     @Reduce(Actions.UPDATE_OFFSET)
@@ -30,6 +30,11 @@ class CharactersReducer : BaseAnnotatedReducer<AppState>() {
 
     @Reduce(Actions.SEARCH_RESULT)
     fun saveResultCharacters(state: AppState, payload: Map<String, Character>): AppState {
-        return state.copy(searchResult = payload, isResult = true)
+        return state.copy(searchResult = payload, isResult = true, isLoading = false)
+    }
+
+    @Reduce(Actions.IS_LOADING)
+    fun isLoading(state: AppState, payload: Boolean): AppState {
+        return state.copy(isLoading = payload)
     }
 }

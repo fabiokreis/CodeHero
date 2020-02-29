@@ -5,6 +5,7 @@ import kotlin.math.min
 data class AppState(
     val characters: Map<String, Character> = LinkedHashMap(),
     val searchResult: Map<String, Character> = LinkedHashMap(),
+    val isLoading: Boolean = false,
     val offset: Int = 0,
     val itemsPerPage: Int = 4,
     val searchQuery: String? = null,
@@ -14,12 +15,15 @@ data class AppState(
         return if (getTotalCharacters() > 0 && getTotalCharacters() >= offset) {
             getCharactersMap().values.toList().subList(offset,
                 min(offset + itemsPerPage, getTotalCharacters()))
+        } else if (getTotalCharacters() < itemsPerPage) {
+            getCharactersMap().values.toList()
         } else {
             null
         }
     }
 
-    private fun getCharactersMap() = if (searchQuery != null) searchResult else characters
+    private fun getCharactersMap() =
+        if (searchQuery != null && searchResult.isNotEmpty()) searchResult else characters
 
     fun getNumberOfVisibleButtons(actual: Int): Int {
         val total: Int = getTotalCharacters() - (actual * itemsPerPage)

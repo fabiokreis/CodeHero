@@ -2,6 +2,7 @@ package br.com.fabiokreis.codehero.actions
 
 import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.actions.Actions.CLEAR_SEARCH
+import br.com.fabiokreis.codehero.actions.Actions.IS_LOADING
 import br.com.fabiokreis.codehero.actions.Actions.SAVE_CHARACTERS
 import br.com.fabiokreis.codehero.actions.Actions.SEARCH_QUERY
 import br.com.fabiokreis.codehero.actions.Actions.SEARCH_RESULT
@@ -34,6 +35,10 @@ object ActionCreator {
 
     fun saveResultCharacters(response: Map<String, Character>) {
         asyncDispatch(Action(SEARCH_RESULT, response))
+    }
+
+    fun isLoading(value: Boolean) {
+        MarvelApplication.redukt.dispatch(Action(IS_LOADING, value))
     }
 
     private fun asyncDispatch(action: Action<*>) {

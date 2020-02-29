@@ -7,4 +7,5 @@ object Actions {
     const val SEARCH_RESULT = "SEARCH_RESULT"
     const val SEARCH_QUERY = "SEARCH_QUERY"
     const val CLEAR_SEARCH = "CLEAR_SEARCH"
+    const val IS_LOADING = "IS_LOADING"
 }
