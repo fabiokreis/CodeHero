@@ -38,7 +38,7 @@ object MarvelServiceApi : BaseApi() {
         offset: Int,
         callback: (character: Response<Character>?, error: String?) -> Unit
     ) {
-        service.getCharacters(timeStamp, publicKey, hash, (offset * 100), limit = 100)
+        service.getCharacters(timeStamp, publicKey, hash, offset, limit = 100)
             .enqueue(handleResponse(callback))
     }
 

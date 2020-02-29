@@ -12,8 +12,8 @@ import com.github.raulccabreu.redukt.actions.Action
 
 object ActionCreator {
 
-    fun syncCharacters(offset: Int) {
-        asyncDispatch(Action(SYNC_CHARACTERS, offset))
+    fun syncCharacters() {
+        asyncDispatch(Action<Void>(SYNC_CHARACTERS))
     }
 
     fun saveResponseCharacters(response: Map<String, Character>) {

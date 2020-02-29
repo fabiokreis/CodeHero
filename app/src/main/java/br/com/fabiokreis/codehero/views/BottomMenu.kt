@@ -80,7 +80,6 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
 
     private fun renderRightArrow() {
         val state = MarvelApplication.redukt.state
-        val total: Int = state.getTotalCharacters()
         val numberOfButtons: Int = state.getTotalOfButtons()
 
         imageView {
@@ -94,7 +93,7 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
                 else if (numberOfButtons > firstButtonNumber + 2)
                     firstButtonNumber++
                 else if (numberOfButtons == firstButtonNumber + 2 && !state.isResult)
-                    ActionCreator.syncCharacters((total / 100) + 1)
+                    ActionCreator.syncCharacters()
                 render()
             }
         }

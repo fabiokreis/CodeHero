@@ -10,7 +10,7 @@ class CharactersReducer : BaseAnnotatedReducer<AppState>() {
 
     @Reduce(Actions.SAVE_CHARACTERS)
     fun saveCharacters(state: AppState, payload: Map<String, Character>): AppState {
-        return state.copy(characters = payload, isResult = false)
+        return state.copy(characters = state.characters.plus(payload), isResult = false)
     }
 
     @Reduce(Actions.UPDATE_OFFSET)

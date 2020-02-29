@@ -20,6 +20,6 @@ class MainActivity : ReactiveActivity() {
     override fun onChanged(state: AppState) { }
 
     private fun syncContent() {
-        ActionCreator.syncCharacters(0)
+        ActionCreator.syncCharacters()
     }
 }
