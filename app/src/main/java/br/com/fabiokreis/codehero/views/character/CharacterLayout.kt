@@ -7,21 +7,24 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.LinearLayout.VERTICAL
+import br.com.fabiokreis.codehero.Anvil.ReactiveFrameComponent
 import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.R
+import br.com.fabiokreis.codehero.actions.ActionCreator
 import br.com.fabiokreis.codehero.extensions.onEnterKeyPressed
 import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.models.Character
-import br.com.fabiokreis.codehero.views.BottomMenu.bottomMenu
-import br.com.fabiokreis.codehero.views.BottomMenu.result
-import br.com.fabiokreis.codehero.views.ReactRenderableView
-import trikita.anvil.Anvil.render
+import br.com.fabiokreis.codehero.views.bottomMenu
+import br.com.fabiokreis.codehero.views.dslAddView
 import trikita.anvil.BaseDSL.MATCH
 import trikita.anvil.BaseDSL.size
 import trikita.anvil.DSL.*
-import java.util.*
 
-class CharacterLayout(context: Context) : ReactRenderableView(context) {
+inline fun characterLayout(crossinline func: CharacterLayout.() -> Unit) {
+    dslAddView(func)
+}
+
+class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
 
     private var characters = listOf<Character>()
     private var name: String = ""
@@ -74,8 +77,6 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             orientation(VERTICAL)
             margin(dip(24), 0, dip(24), 0)
 
-            val state = MarvelApplication.redukt.state
-
             textView {
                 text(R.string.nome_personagem)
                 textColor(redMarvel)
@@ -93,7 +94,11 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
                 onTextChanged { name = it.toString() }
                 hint(R.string.pesquisar)
                 onEnterKeyPressed {
-                    characters = state.search(state, name) ?: state.characters.values.toList()
+                    if (name.isEmpty())
+                        ActionCreator.clearSearch()
+                    else
+                        ActionCreator.searchQuery(this.name)
+
                     render()
                 }
             }
@@ -144,24 +149,30 @@ class CharacterLayout(context: Context) : ReactRenderableView(context) {
             alignParentBottom()
             size(MATCH, WRAP)
 
-            bottomMenu(result { offset = it })
+            bottomMenu {
+                if (offset == 0) setButtonActive(1)
+                result { offset = it }
+                this@CharacterLayout.render()
+            }
 
-            filterCharacters()
+            filterCharacters(MarvelApplication.redukt.state)
         }
     }
 
     override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
-        return newState != oldState
+        return newState.characters != oldState.characters
+                || newState.searchResult != oldState.searchResult
     }
 
     override fun onChanged(state: AppState) {
+        if (state.isResult) offset = 0
         filterCharacters(state)
-        render()
     }
 
     private fun filterCharacters(state: AppState? = null) {
-        val state = state ?: MarvelApplication.redukt.state
-        characters = state.filteredCharactersList(state, offset) ?: state.characters.values.toList()
+        state ?: return
+        characters = state.filteredCharactersList(offset) ?: state.characters.values.toList()
+        render()
     }
 
 }

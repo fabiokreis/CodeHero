@@ -3,6 +3,8 @@ package br.com.fabiokreis.codehero.views
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.LinearLayout.HORIZONTAL
+import br.com.fabiokreis.codehero.Anvil.ReactiveFrameComponent
+import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.utils.GlideApp
 import com.bumptech.glide.request.RequestOptions
@@ -16,8 +18,16 @@ import trikita.anvil.BaseDSL.textSize
 import trikita.anvil.DSL.*
 import trikita.anvil.cardview.v7.CardViewv7DSL.cardView
 
-object CardLayout {
-    fun cardLayout(context: Context, character: Character) {
+inline fun cardLayout(crossinline func: CardLayout.() -> Unit) {
+    dslAddView(func)
+}
+
+class CardLayout(context: Context) : ReactiveFrameComponent(context) {
+
+    private var character: Character? = null
+
+    override fun view() {
+        val character = character ?: return
         cardView {
             size(MATCH, MATCH)
             margin(dip(1))
@@ -60,5 +70,19 @@ object CardLayout {
             textSize(sip(18f))
             typeface(null, Typeface.BOLD)
         }
+    }
+
+    fun character(character: Character) {
+        this.character = character
+    }
+
+    override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
+        val character = character ?: return false
+        return newState.characters[character.name] != oldState.characters[character.name]
+    }
+
+    override fun onChanged(state: AppState) {
+        val character = state.characters[character?.name] ?: return
+        character(character)
     }
 }

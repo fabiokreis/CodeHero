@@ -34,7 +34,18 @@ object MarvelServiceApi : BaseApi() {
 
     private val service = retrofit.create(MarvelService::class.java)
 
-    fun getCharacters(callback: (character: Response<Character>?, error: String?) -> Unit) {
-        service.getCharacters(timeStamp, publicKey, hash, 0, 100).enqueue(handleResponse(callback))
+    fun getCharacters(
+        offset: Int,
+        callback: (character: Response<Character>?, error: String?) -> Unit
+    ) {
+        service.getCharacters(timeStamp, publicKey, hash, (offset * 100), limit = 100)
+            .enqueue(handleResponse(callback))
+    }
+
+    fun getSearchCharacters(
+        name: String,
+        callback: (character: Response<Character>?, error: String?) -> Unit
+    ) {
+        service.getCharacter(timeStamp, publicKey, hash, name).enqueue(handleResponse(callback))
     }
 }

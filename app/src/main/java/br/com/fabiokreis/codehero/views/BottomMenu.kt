@@ -1,17 +1,24 @@
 package br.com.fabiokreis.codehero.views
 
+import android.content.Context
 import android.graphics.Color
 import android.widget.LinearLayout.HORIZONTAL
+import br.com.fabiokreis.codehero.Anvil.ReactiveFrameComponent
 import br.com.fabiokreis.codehero.MarvelApplication
 import br.com.fabiokreis.codehero.R
-import trikita.anvil.Anvil.render
+import br.com.fabiokreis.codehero.actions.ActionCreator
+import br.com.fabiokreis.codehero.models.AppState
 import trikita.anvil.BaseDSL
 import trikita.anvil.BaseDSL.WRAP
 import trikita.anvil.BaseDSL.dip
 import trikita.anvil.DSL.*
 import trikita.anvil.cardview.v7.CardViewv7DSL.cardView
 
-object BottomMenu {
+inline fun bottomMenu(crossinline func: BottomMenu.() -> Unit) {
+    dslAddView(func)
+}
+
+class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
 
     private val redMarvel = Color.parseColor("#D42026")
     private var firstButtonNumber: Int = 1
@@ -19,7 +26,7 @@ object BottomMenu {
 
     private var resultCallback: ((Int) -> Unit)? = null
 
-    fun bottomMenu(result: Unit) {
+    override fun view() {
         cardView {
             size(MATCH, WRAP)
             relativeLayout {
@@ -39,7 +46,9 @@ object BottomMenu {
             margin(dip(30), dip(18), 0, dip(24))
             backgroundResource(R.drawable.baseline_arrow_left_24)
             onClick {
-                if (firstButtonNumber > 1)
+                if (firstButtonNumber > 3)
+                    firstButtonNumber -= 3
+                else if (firstButtonNumber > 1)
                     firstButtonNumber--
                 render()
             }
@@ -65,6 +74,7 @@ object BottomMenu {
                         resultCallback?.invoke((buttonActive - 1) * 4)
                         render()
                     }
+                    render()
                 }
             }
         }
@@ -81,8 +91,12 @@ object BottomMenu {
             margin(0, dip(18), dip(30), dip(24))
             backgroundResource(R.drawable.baseline_arrow_right_24)
             onClick {
-                if (numberOfButtons > firstButtonNumber + 2)
+                if (numberOfButtons > firstButtonNumber + 4)
+                    firstButtonNumber += 3
+                else if (numberOfButtons > firstButtonNumber + 2)
                     firstButtonNumber++
+                else if (numberOfButtons == firstButtonNumber + 2 && !state.isResult)
+                    ActionCreator.syncCharacters((total / 100) + 1)
                 render()
             }
         }
@@ -104,5 +118,19 @@ object BottomMenu {
 
     fun result(callback: (Int) -> Unit) {
         resultCallback = callback
+        render()
+    }
+
+    fun setButtonActive(buttonActive: Int) {
+        this.buttonActive = buttonActive
+        render()
+    }
+
+    override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
+        return newState != oldState
+    }
+
+    override fun onChanged(state: AppState) {
+
     }
 }
