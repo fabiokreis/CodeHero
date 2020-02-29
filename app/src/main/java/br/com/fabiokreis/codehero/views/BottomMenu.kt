@@ -59,6 +59,7 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
             centerInParent()
 
             val numberOfButtons = MarvelApplication.redukt.state.getNumberOfVisibleButtons(firstButtonNumber)
+            val itemsPerPage = MarvelApplication.redukt.state.itemsPerPage
 
             for (x in firstButtonNumber..firstButtonNumber + numberOfButtons) {
                 textView {
@@ -71,7 +72,7 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
                     backgroundResource(getButtonResource(active))
                     onClick {
                         buttonActive = x
-                        ActionCreator.updateOffset((x - 1) * 4)
+                        ActionCreator.updateOffset((x - 1) * itemsPerPage)
                     }
                 }
             }
@@ -80,7 +81,7 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
 
     private fun renderRightArrow() {
         val state = MarvelApplication.redukt.state
-        val numberOfButtons: Int = state.getTotalOfButtons()
+        val numberOfButtons = state.getTotalOfButtons()
 
         imageView {
             alignParentRight()

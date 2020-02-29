@@ -3,8 +3,7 @@ package br.com.fabiokreis.codehero.views
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.LinearLayout.HORIZONTAL
-import br.com.fabiokreis.codehero.Anvil.ReactiveFrameComponent
-import br.com.fabiokreis.codehero.models.AppState
+import br.com.fabiokreis.codehero.Anvil.FrameLayoutComponent
 import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.utils.GlideApp
 import com.bumptech.glide.request.RequestOptions
@@ -22,7 +21,7 @@ inline fun cardLayout(crossinline func: CardLayout.() -> Unit) {
     dslAddView(func)
 }
 
-class CardLayout(context: Context) : ReactiveFrameComponent(context) {
+class CardLayout(context: Context) : FrameLayoutComponent(context) {
 
     private var character: Character? = null
 
@@ -74,15 +73,6 @@ class CardLayout(context: Context) : ReactiveFrameComponent(context) {
 
     fun character(character: Character) {
         this.character = character
-    }
-
-    override fun hasChanged(newState: AppState, oldState: AppState): Boolean {
-        val character = character ?: return false
-        return newState.characters[character.name] != oldState.characters[character.name]
-    }
-
-    override fun onChanged(state: AppState) {
-        val character = state.characters[character?.name] ?: return
-        character(character)
+        Anvil.render(this)
     }
 }

@@ -16,6 +16,7 @@ import br.com.fabiokreis.codehero.models.AppState
 import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.views.bottomMenu
 import br.com.fabiokreis.codehero.views.dslAddView
+import trikita.anvil.Anvil
 import trikita.anvil.BaseDSL.MATCH
 import trikita.anvil.BaseDSL.size
 import trikita.anvil.DSL.*
@@ -131,14 +132,17 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
             above(14)
             size(MATCH, MATCH)
             orientation(VERTICAL)
-            weightSum(1f)
+            weightSum(MarvelApplication.redukt.state.itemsPerPage.toFloat())
 
             characters.forEach { character ->
                 characterSummaryView {
-                    weight(.25f)
+                    size(MATCH, 0)
+                    weight(1f)
                     character(character)
                 }
             }
+
+            Anvil.render()
         }
     }
 
@@ -148,11 +152,7 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
             alignParentBottom()
             size(MATCH, WRAP)
 
-            bottomMenu {
-                this@CharacterLayout.render()
-            }
-
-            filterCharacters(MarvelApplication.redukt.state)
+            bottomMenu { }
         }
     }
 
@@ -169,7 +169,7 @@ class CharacterLayout(context: Context) : ReactiveFrameComponent(context) {
     private fun filterCharacters(state: AppState? = null) {
         state ?: return
         characters = state.filteredCharactersList() ?: state.characters.values.toList()
-        render()
+        Anvil.render()
     }
 
 }
