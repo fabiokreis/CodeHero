@@ -30,7 +30,7 @@ class CharactersReducer : BaseAnnotatedReducer<AppState>() {
 
     @Reduce(Actions.SEARCH_RESULT)
     fun saveResultCharacters(state: AppState, payload: Map<String, Character>): AppState {
-        return state.copy(searchResult = payload, isResult = true, isLoading = false)
+        return state.copy(searchResult = payload, isResult = true, isLoading = false, offset = 0)
     }
 
     @Reduce(Actions.IS_LOADING)

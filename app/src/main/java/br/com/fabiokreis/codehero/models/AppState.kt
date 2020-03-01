@@ -34,5 +34,5 @@ data class AppState(
         return if ((total % itemsPerPage) == 0) total / itemsPerPage else (total / itemsPerPage) + 1
     }
 
-    private fun getTotalCharacters(): Int = getCharactersMap().count()
+    fun getTotalCharacters(): Int = getCharactersMap().count()
 }

@@ -58,10 +58,14 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
             orientation(HORIZONTAL)
             centerInParent()
 
-            val numberOfButtons = MarvelApplication.redukt.state.getNumberOfVisibleButtons(firstButtonNumber)
-            val itemsPerPage = MarvelApplication.redukt.state.itemsPerPage
+            val state = MarvelApplication.redukt.state
 
-            for (x in firstButtonNumber..firstButtonNumber + numberOfButtons) {
+            val numberOfButtons = state.getNumberOfVisibleButtons(firstButtonNumber)
+            val itemsPerPage = MarvelApplication.redukt.state.itemsPerPage
+            val increment =
+                if (state.getTotalCharacters() < 4) firstButtonNumber else firstButtonNumber + numberOfButtons
+
+            for (x in firstButtonNumber..increment) {
                 textView {
                     val active = x == buttonActive
                     text(x.toString())
@@ -118,5 +122,11 @@ class BottomMenu(context: Context) : ReactiveFrameComponent(context) {
         return newState != oldState
     }
 
-    override fun onChanged(state: AppState) { }
+    override fun onChanged(state: AppState) {
+        if (state.offset == 0) {
+            buttonActive = 1
+            firstButtonNumber = 1
+        }
+
+    }
 }

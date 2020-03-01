@@ -19,7 +19,6 @@ import br.com.fabiokreis.codehero.models.Character
 import br.com.fabiokreis.codehero.views.bottomMenu
 import br.com.fabiokreis.codehero.views.dslAddView
 import trikita.anvil.Anvil
-import trikita.anvil.BaseDSL
 import trikita.anvil.BaseDSL.MATCH
 import trikita.anvil.BaseDSL.size
 import trikita.anvil.DSL.*
